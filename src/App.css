@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+.Moves {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.btn {
+  border: black solid 5px;
+  border-radius: 25px;
+  width: 20%;
+  height: 20%;
+  text-align: center;
+  margin: 0px 10px;
+}
