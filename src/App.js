@@ -27,7 +27,7 @@ function App() {
 
     if(playerScore === 21)win(); 
     else if (playerScore > 21) bust(); 
-    
+
   }, [playerHand]);
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const calcHandScore = (currentHand, setScore) => {
     return card.value === 1; 
   });
 
-  console.log(aces);
+  // console.log(aces);
 
   currentHand.forEach(card => {
     if(card.value!== 1){
@@ -95,7 +95,7 @@ const calcHandScore = (currentHand, setScore) => {
     }
   }
 
-  console.log(total);
+  // console.log(total);
 
   setScore(total);
 };
