@@ -1,6 +1,7 @@
 import './App.css';
 import Button from './Componets/Buttons'; 
 import Board from './Componets/Board';
+import ReactDOM from 'react-dom';
 import React, {useEffect, useState, useRef} from 'react';
 
 function App() {
@@ -16,59 +17,65 @@ function App() {
   const[dealerHand, setDealerHand] = useState([]); 
   const[dealerScore, setDealerScore] = useState(0);
 
-  useEffect(() => {
-    shuffle(deck);
-    setDealerHand(initHand);
-    setPlayerHand(initHand);
-  }, []);
 
   useEffect(() => {
-    console.log("calc player hand");
-    calcHandScore(playerHand, setPlayerScore);
-    console.log(playerScore);
+    shuffle(deck);
+
+    const initHand = () => {
+      var newHand = []; 
+    
+      for (var i = 0; i < 2; i++){
+          newHand.push(getNextCard()); 
+      }
+  
+      return newHand;
+    };
+
+    setDealerHand(initHand);
+    setPlayerHand(initHand);
+  }, [deck]);
+
+  useEffect(() => {
+    //console.log("calc player hand");
+    
+    setPlayerScore(calcHandScore(playerHand));
+    //console.log(playerScore);
     if(playerScore === 21){
       win();
     } 
     else if (playerScore > 21){
-      console.log("bust");
       bust(); 
     }
-  }, [playerHand]);
+  }, [playerHand, playerScore]);
 
   useEffect(() => {
     console.log("calc dealer hand");
-    calcHandScore(dealerHand, setDealerScore);
-  }, [dealerHand]);
+    setDealerScore(calcHandScore(dealerHand));
+    console.log(dealerScore);
 
-  const initHand = () => {
-    var newHand = []; 
-  
-    for (var i = 0; i < 2; i++){
-        newHand.push(getNextCard()); 
+    if(dealerScore === 21){
+      lose();
+    } 
+    else if (dealerScore > 21){
+      win(); 
     }
 
-    return newHand;
-  };
-  
-  const getNextCard = () => {
-    console.log(deck[pos.current]);
-    return deck[pos.current++];
-  };
+  }, [dealerHand, dealerScore]);
 
   
-const calcHandScore = (currentHand, setScore) => {
-  console.log(currentHand);
+const calcHandScore = (currentHand) => {
+  //console.log(currentHand);
 
   let total = 0; 
 
   let aces = currentHand.filter((card) => {
-    return card.value === 1; 
+    return card.value === 'A'; 
   });
 
   currentHand.forEach(card => {
-    if(card.value!== 1){
+    if(card.value!== 'A'){
 
-      if(card.value >= 11){
+      if(card.value >= 'J' || card.value >= 'Q' || card.value >= 'K'){
         total += 10; 
       }else{
         total += card.value;
@@ -89,25 +96,40 @@ const calcHandScore = (currentHand, setScore) => {
       total += 11; 
     }
   }
-  console.log(total);
-  setScore(total);
+
+  return total; 
 };
 
-const dealerPlays = () => {
 
-  while(true){
-    if(dealerScore >= 17) {
-      break;
-    }
-    console.log("added card to dealer");
-    setDealerHand([...dealerHand, getNextCard()]);
-    calcHandScore(dealerHand, setDealerScore);
-  }
+const stand = () => {
 
-  checkWinner();
+ let currentDealerHand = dealerHand;
+ let currentDealerScore = dealerScore;
+
+ //console.log(currentDealerHand);
+
+while(currentDealerScore < 17){
+  currentDealerHand.push(getNextCard());
+  console.log(currentDealerHand);
+
+  currentDealerScore = calcHandScore(currentDealerHand);
+  console.log(currentDealerScore);
+}
+console.log("dealer can't play no more cards");
+
+setDealerHand(currentDealerHand);
+setDealerScore(currentDealerScore);
+checkWinner();
 }
 
+
+const getNextCard = () => {
+  //console.log(deck[pos.current]);
+  return deck[pos.current++];
+};
+
 const checkWinner = () => {
+  console.log("checking winner");
   if(playerScore > dealerScore || dealerScore > 21){
     win();
   }else if( dealerScore > playerScore){
@@ -133,18 +155,20 @@ const bust = () => {
   setResult("Bust");
 }
 
+const resetGame = () => {
+  setDeck(initDeck());
+}
+
 
   return (
     <div className="App">
       <h1>Black Jack</h1>
       <h3>Result: {result}</h3>
-      <h1>Dealer Score: {dealerScore}</h1>
-      <h1>Player Score: {playerScore}</h1>
       <Board playerHand={playerHand} dealerHand={dealerHand}/>
-      <div className="Moves">
+      <div className="button-options">
         <Button name="HIT" playerHand={playerHand} setPlayerHand={setPlayerHand} getNextCard={getNextCard}/>
-        <Button name="STAND" playerHand={playerHand} dealerPlays={dealerPlays}/>
-        <Button name="RESET" playerHand={playerHand} />
+        <Button name="STAND" playerHand={playerHand} dealerPlays={stand}/>
+        <Button name="RESET" playerHand={playerHand} resetGame={resetGame}/>
       </div>
       </div> 
   );
@@ -157,21 +181,38 @@ const initDeck = () => {
   var i; 
   var ID = 0; 
 
-  for(i = 1; i <= 13; i++){
+  initdeck.push({value: 'A' , suit: 'H', id: ID += 1 });
+  for(i = 2; i <= 10; i++){
       initdeck.push({value: i , suit: 'H', id: ID += 1 });
   }
+  initdeck.push({value: 'J' , suit: 'H', id: ID += 1 });
+  initdeck.push({value: 'Q' , suit: 'H', id: ID += 1 });
+  initdeck.push({value: 'K' , suit: 'H', id: ID += 1 });
+  
 
-  for(i = 1; i <= 13; i++){
+  initdeck.push({value: 'A' , suit: 'S', id: ID += 1 });
+  for(i = 2; i <= 10; i++){
       initdeck.push({value: i , suit: 'S', id: ID += 1 });
   }
+  initdeck.push({value: 'J' , suit: 'S', id: ID += 1 });
+  initdeck.push({value: 'Q' , suit: 'S', id: ID += 1 });
+  initdeck.push({value: 'K' , suit: 'S', id: ID += 1 });
 
-  for(i = 1; i <= 13; i++){
+  initdeck.push({value: 'A' , suit: 'C', id: ID += 1 });
+  for(i = 2; i <= 10; i++){
       initdeck.push({value: i , suit: 'C', id: ID += 1 });
   }
+  initdeck.push({value: 'J' , suit: 'C', id: ID += 1 });
+  initdeck.push({value: 'Q' , suit: 'C', id: ID += 1 });
+  initdeck.push({value: 'K' , suit: 'C', id: ID += 1 });
 
-  for(i = 1; i <= 13; i++){
+  initdeck.push({value: 'A' , suit: 'D', id: ID += 1 });
+  for(i = 2; i <= 10; i++){
       initdeck.push({value: i , suit: 'D', id: ID += 1 });
   }
+  initdeck.push({value: 'J' , suit: 'D', id: ID += 1 });
+  initdeck.push({value: 'Q' , suit: 'D', id: ID += 1 });
+  initdeck.push({value: 'K' , suit: 'D', id: ID += 1 });
 
   //console.log(initdeck);
   return initdeck;

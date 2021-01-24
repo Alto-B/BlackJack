@@ -1,21 +1,20 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
-  position: fixed;
-  height: 100%;
+  height: 100vh;
   width: 100%;
+  background-color: green;
 }
 
-.container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.Moves {
+.button-options {
   display: flex;
   justify-content: center;
   position: absolute;
-  bottom: 0;
   width: 100%;
 }
 
@@ -23,30 +22,72 @@
   border: black solid 5px;
   border-radius: 25px;
   width: 20%;
-  height: 20%;
+  height: 50%;
   text-align: center;
+  padding: 20px 0;
   margin: 0px 10px;
 }
 
 .game-board {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  height: 80%;
   width: 100%;
-}
-
-.card {
-  border: black solid 5px;
-  border-radius: 25px;
-  text-align: center;
-  margin: 0 10px;
-  width: 20%;
-  height: 100%;
 }
 
 .hand {
   display: flex;
   justify-content: center;
-  margin: 10px 0;
+  height: 50%;
+}
+
+.card {
+  position: relative;
+  display: inline;
+  font: 16px "Trebuchet MS";
+
+  background-color: white;
+  border-radius: 25px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  margin: 0 10px;
+  padding: 70px 0;
+  width: 20%;
+  height: 90%;
+}
+
+.card h1 {
+  margin-bottom: 10px;
+}
+
+.card--heart {
+  color: red;
+}
+
+.card--heart::after {
+  content: "♥";
+  font-size: 60px;
+}
+
+.card--diamond {
+  color: red;
+}
+
+.card--diamond::after {
+  content: "♦️";
+  font-size: 60px;
+}
+
+.card--spades {
+}
+
+.card--spades::after {
+  content: "♠";
+  font-size: 60px;
+}
+
+.card--clubs {
+}
+
+.card--clubs::after {
+  content: "♣️";
+  font-size: 60px;
 }
