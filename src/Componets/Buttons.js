@@ -1,20 +1,20 @@
 import React from 'react';
 
-const Buttons = ({name, playerHand, setPlayerHand, getNextCard, dealerPlays, resetGame}) => {
+const Buttons = ({name, playerHand, setPlayerHand, getNextCard, dealerPlays, resetGame, clickable}) => {
 
     const btnHit = () => {
         if(name.localeCompare("HIT") === 0){
             setPlayerHand([...playerHand, getNextCard()]);
         }else if (name.localeCompare("STAND") === 0){
             dealerPlays();
-        }else {
+        }else if (name.localeCompare("RESET") === 0){
             resetGame();
         }
     }
 
     return (
-        <div className="btn" onClick={btnHit}>
-            <h3>{name}</h3>
+        <div className="btn--holder">
+            <button className="btn" onClick={btnHit} disabled={clickable}>{name}</button>
         </div>
     );
 };

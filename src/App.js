@@ -1,15 +1,13 @@
 import './App.css';
 import Button from './Componets/Buttons'; 
 import Board from './Componets/Board';
-import ReactDOM from 'react-dom';
 import React, {useEffect, useState, useRef} from 'react';
 
 function App() {
 
   const[deck, setDeck] = useState(initDeck);  
   const pos = useRef(0); 
-  const[gameState, setGameState] = useState(true);
-  const[result, setResult] = useState("");
+  const [result, setResult] = useState("");
 
   const[playerHand, setPlayerHand] = useState([]); 
   const[playerScore, setPlayerScore] = useState(0);
@@ -17,8 +15,12 @@ function App() {
   const[dealerHand, setDealerHand] = useState([]); 
   const[dealerScore, setDealerScore] = useState(0);
 
+  const[hitBtn, setHitBtn] = useState(false);
+  const[standBtn, setStandBtn] = useState(false);
+
 
   useEffect(() => {
+    console.log("deck worked");
     shuffle(deck);
 
     const initHand = () => {
@@ -36,10 +38,10 @@ function App() {
   }, [deck]);
 
   useEffect(() => {
-    //console.log("calc player hand");
+    console.log("Player hand");
     
     setPlayerScore(calcHandScore(playerHand));
-    //console.log(playerScore);
+    console.log(playerScore);
     if(playerScore === 21){
       win();
     } 
@@ -49,9 +51,9 @@ function App() {
   }, [playerHand, playerScore]);
 
   useEffect(() => {
-    console.log("calc dealer hand");
+    //console.log("calc dealer hand");
     setDealerScore(calcHandScore(dealerHand));
-    console.log(dealerScore);
+    //console.log(dealerScore);
 
     if(dealerScore === 21){
       lose();
@@ -102,24 +104,25 @@ const calcHandScore = (currentHand) => {
 
 
 const stand = () => {
+  console.log("Dealer playing");
 
  let currentDealerHand = dealerHand;
  let currentDealerScore = dealerScore;
 
  //console.log(currentDealerHand);
 
-while(currentDealerScore < 17){
-  currentDealerHand.push(getNextCard());
-  console.log(currentDealerHand);
+  while(currentDealerScore < 17){
+    currentDealerHand.push(getNextCard());
+    //console.log(currentDealerHand);
 
-  currentDealerScore = calcHandScore(currentDealerHand);
-  console.log(currentDealerScore);
-}
-console.log("dealer can't play no more cards");
+    currentDealerScore = calcHandScore(currentDealerHand);
+   // console.log(currentDealerScore);
+  }
+  //console.log("dealer can't play no more cards");
 
-setDealerHand(currentDealerHand);
-setDealerScore(currentDealerScore);
-checkWinner();
+  setDealerHand(currentDealerHand);
+  setDealerScore(currentDealerScore);
+  checkWinner();
 }
 
 
@@ -129,7 +132,7 @@ const getNextCard = () => {
 };
 
 const checkWinner = () => {
-  console.log("checking winner");
+  //console.log("checking winner");
   if(playerScore > dealerScore || dealerScore > 21){
     win();
   }else if( dealerScore > playerScore){
@@ -137,6 +140,9 @@ const checkWinner = () => {
   }else {
     tie();
   }
+
+  setHitBtn(true);
+  setStandBtn(true);
 }
 
 const win = () => {
@@ -153,21 +159,29 @@ const tie = () =>{
 
 const bust = () => {
   setResult("Bust");
+  setHitBtn(true);
+  setStandBtn(true);
 }
 
 const resetGame = () => {
   setDeck(initDeck());
+  setResult("");
+  setHitBtn(false);
+  setStandBtn(false);
+  console.log(`Result ${result}`);
+
 }
 
 
   return (
     <div className="App">
-      <h1>Black Jack</h1>
-      <h3>Result: {result}</h3>
-      <Board playerHand={playerHand} dealerHand={dealerHand}/>
+      <div className="outcome">
+        <p>RESULT: {result}</p>
+      </div>
+      <Board playerHand={playerHand} dealerHand={dealerHand} playerScore={playerScore}/>
       <div className="button-options">
-        <Button name="HIT" playerHand={playerHand} setPlayerHand={setPlayerHand} getNextCard={getNextCard}/>
-        <Button name="STAND" playerHand={playerHand} dealerPlays={stand}/>
+        <Button name="HIT" playerHand={playerHand} setPlayerHand={setPlayerHand} getNextCard={getNextCard} clickable={hitBtn}/>
+        <Button name="STAND" playerHand={playerHand} dealerPlays={stand} clickable={standBtn}/>
         <Button name="RESET" playerHand={playerHand} resetGame={resetGame}/>
       </div>
       </div> 
