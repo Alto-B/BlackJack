@@ -41,7 +41,9 @@ function App() {
     console.log("Player hand");
     
     setPlayerScore(calcHandScore(playerHand));
+    
     console.log(playerScore);
+
     if(playerScore === 21){
       win();
     } 
@@ -54,13 +56,6 @@ function App() {
     //console.log("calc dealer hand");
     setDealerScore(calcHandScore(dealerHand));
     //console.log(dealerScore);
-
-    if(dealerScore === 21){
-      lose();
-    } 
-    else if (dealerScore > 21){
-      win(); 
-    }
 
   }, [dealerHand, dealerScore]);
 
